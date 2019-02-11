@@ -1,7 +1,8 @@
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
-PS1='[\u@\h->\W]\$ '
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -84,6 +85,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -112,192 +116,76 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+export http_proxy=http://proxy.vegvesen.no:8080
+export PATH=~/bin:$PATH
 
-#xmodmap -e "clear Lock"
-ulimit -c unlimited
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre
-export LD_LIBRARY_PATH=~/opt/lib/:/usr/lib/jni:/usr/local/lib:.
+alias agrep="ack-grep --ignore-dir=target"
+alias jack="ack-grep --ignore-dir=target --type=java"
+alias xack="ack-grep --ignore-dir=target --type=xml"
+alias cack="ack-grep --ignore-dir=target --type=cpp --type=cc"
+alias sack="ack-grep --ignore-dir=target --type=shell"
+alias dack="ack-grep --ignore-dir=target --type=dlang"
+alias rack="ack-grep --ignore-dir=target --type=ruby"
+alias vim="vim -p"
 
-export MAVEN_OPTS_NODEBUG="-DCONSTRETTO_TAGS=DEV -XX:MaxPermSize=256M -Xms512m -Xmx1024m"
-export MAVEN_OPTS_DEBUG="-DCONSTRETTO_TAGS=DEV -XX:MaxPermSize=256M -Xms512m -Xmx1024m -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y"
-export MAVEN_OPTS=$MAVEN_OPTS_NODEBUG
-shopt -s histappend
-export HISTCONTROL=ignoreboth
-export HISTSIZE=1000000 HISTFILESIZE=1000000
-
-
-function vshortcuts() { # List shorcuts
-	echo LogfileShortcuts:
-	LogfileShortcuts.py -?
-	echo
-	echo DirectoryShortcuts:
-	DirectoryShortcuts.py -?
-	echo
-	echo CommandShortcuts:
-	CommandShortcuts.py -?
+function marialog {
+	ssh -q exteva@tomcatlab04 "tail --lines=200 /tmp/maria.log" | less
 }
 
-function vcd() { # cd with tailored shortcut. See DirectoryShortcuts
-	folder=`DirectoryShortcuts.py $1`
-	cd $folder
+function vmakepasswd {
+	makepasswd --string '1234567890qwertyuiopQWERTYUIOPasdfghjklASDFGHJKKLzxcvbnmZXCVBNM'
 }
 
-function vhelp { # HELP DISPLAY
-	grep "^function .*{.*#" ~/.bashrc
+function goodmorning {
+	vim -p ~/Dropbox/timer.txt ~/Dropbox/todo.txt ~/Dropbox/notes.txt ~/Dropbox/einarvalen.com/howto/vim.txt
 }
 
-function vmci() { # Maven build with DirectoryShortcuts
-	for var in "$@"
-	do
-		folder=`DirectoryShortcuts.py $var`
-		echo $folder
-		(cd $folder && mvn3 -o clean install)
-	done
+function timer {
+	vim -p ~/Dropbox/timer.txt 
 }
 
-function vmvn() { # Maven build with CommandShortcuts
-	commands=`CommandShortcuts.py $@`
-	echo mvn3 $commands
-	mvn3 $commands
+function notes {
+	vim -p ~/Dropbox/todo.txt ~/Dropbox/notes.txt
 }
 
-function vcreate-project() { # Create Maven project
-	if [ "$1" = "w" ]; then
-		mvn archetype:generate -DarchetypeArtifactId=maven-archetype-webapp  -DgroupId=org.einarvalen -DartifactId=$2
-	elif [ "$1" = "r" ]; then
-		mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DgroupId=org.einarvalen -DartifactId=$2
-	else
-		echo vcreate-project w|r  project-name r=regular project, w=war project
-	fi
+function ubuntu-version {
+	lsb_release -a
 }
 
-function vutf8 { # convert files from iso8859 to utf8
-	for file in $1; do
-	iconv --from-code=ISO-8859-1 --to-code=UTF-8 $file > /tmp/utf8conv;
-	rm $file;
-	mv /tmp/utf8conv $file;
-	done
+function vtmux {
+    tmux new-session \; \
+        rename-window notes \; \
+        new-window -c ~/git/autopro/lib -n autopro \;  \
+        new-window -c ~/git/svv_tomcat/manifests -n svv_tomcat \; \
+        new-window -c ~/git/svv_httpd/manifests -n svv_httpd \; \
+        new-window -c ~/git/autogen -n autogen \; \
+        new-window -c ~/git/stm -n stm \; \
+        new-window -c ~/git/mariasys/maria -n mariasys \; \
+        new-window -c ~/git/fabel -n fabel\;
+        #new-window -c ~/git/artifactresolver -n artifactresolver\;
+        #new-window -c ~/git/svv_autopro -n svv_autopro \; \
+        #new-window -c ~/git/basestat -n basestat \; \
+        #new-window -c ~/git/svv_mcollective -n mco \; \
 }
 
-function vfz3 { #Start filezilla3
-	~/opt/FileZilla3/bin/filezilla &
-}
+export docwebuser=tdwmariasyssa
+export docwebpw=7siTZIBgj2TGAuwArE4B
 
-function vthunderbird { # Start thunderbird
-	ps -ef | grep thun[d]erbird | awk '{printf("kill %s\n", $2);}' | bash
-	thunderbird >/dev/null 2>&1 &
-}
+#Ranger
+export EDITOR=vim
+export SHELL=bash
 
-function vpidgin { # Start pidgin
-	ps -ef | grep pid[g]in | awk '{printf("kill %s\n", $2);}' | bash
-	pidgin >/dev/null 2>&1 &
-}
+export autpro_maria_stm=Rsdhj1vnDRjPTnU5XEeL 
+export autpro_maria_atm=CCjHEkUQAYRVrMZMXNeV 
+export autpro_maria_prod=MNRaBTHnVvfoLvy2WYWS
+export autpro_httpdtest_stm=3Ud4FPQJUkSgFWn6x8JM
+export autpro_httpdtest_atm=PywE6rYVzAjrcPcSaiqd
+export autpro_httpdtest_prod=KBxfSBrgvBi2O89QwQ1S
+export passwd=UgQfDoaHjQM6krxUsRuF # UgQfDoaHjQM6krxUsRuF # yMq3hCJTA9wmL7EbqGUU # 1bCOa0Z19UKn0UeULhbx
+export pwTjeAutopro_Mariasys_stm=UgQfDoaHjQM6krxUsRuF 
+export pwTjeAutopro_Mariasys_atm=yMq3hCJTA9wmL7EbqGUU 
+export pwTjeAutopro_Mariasys_prod=1bCOa0Z19UKn0UeULhbx
+export pwTjeBase_mariasys_01_Autopro=MNRaBTHnVvfoLvy2WYWS # Rsdhj1vnDRjPTnU5XEeL
+export pwTjeBase_mariasys_01_AutoproPROD=AVCKHKnVP8umufsE3jTC
+export pwTjeBase_mariasys_01_AutoproATM=rnE5GwrRYmMwnUSJhmcY
 
-function vgnote { # Start gnote
-	ps -ef | grep g[n]ote | awk '{printf("kill %s\n", $2);}' | bash
-	gnote >/dev/null 2>&1 &
-}
-
-function vskype { # Start skype
-	ps -ef | grep s[k]ype | awk '{printf("kill %s\n", $2);}' | bash
-	skype >/dev/null 2>&1 &
-}
-
-function vstart_im_mail_notes {
-	vthunderbird; vpidgin #; vgnote; vskype
-}
-
-function vstart_dev_tools {
-	eclipse
-	firefox &
-	geany &
-	nautilus ~ &
-	menu.sh
-	#cd ~/iknow/git/iknow/iknow-ws
-	cd ~/tv2/scm/dataflow/spikes
-}
-
-function voel { # Start Oracle Enterprise linux in VirtualBox
-	virtualbox --startvm "Oracle Developer Days" &
-}
-
-function vmule { # Start MuleStudio and mule server
-	xterm -e mule &
-    firefox http://localhost:8585/mmc &
-    firefox http://localhost:8084/MyMessage  &
-    (cd ~/opt/MuleStudio/  ;   ./MuleStudio &)
-}
-
-function vnetconfig { # Alter resolv.conf after connecting to admin
-	cat /etc/resolv.conf
-	sudo cp ~/bin/resolv.conf /etc/resolv.conf
-	cat /etc/resolv.conf
-}
-
-function vqpurge { # Purge named queue
-	$IMQ_HOME/bin/imqcmd purge dst -u admin -t q -n $1 <<<admin
-}
-
-function vqquery { # Query named queue
-	$IMQ_HOME/bin/imqcmd query dst -u admin -t q -n $1 <<<admin
-}
-
-function vstart_my_programs { # Daily program startup
-	vstart_im_mail_notes && vstart_dev_tools
-}
-
-function vrinst {
-	#scp -r /home/einar/iknow/svn/dojoandrest/target/test-classes/org/einarvalen/poc/dojoandrest/mq/netty/* /home/einar/iknow/svn/dojoandrest/target/classes/org/einarvalen/poc/dojoandrest/mq/netty/* dsadm@172.30.30.108:/opt/Intelcom/iKnow.3.0/manager/bin/classes/org/einarvalen/poc/dojoandrest/mq/netty
-	scp -r /home/einar/iknow/svn/dojoandrest/target/test-classes/no/intelcom/iknow/events/netty/ServerMuckup.class /home/einar/iknow/svn/dojoandrest/target/classes/no/intelcom/iknow/events/netty/* dsadm@172.30.30.108:/opt/Intelcom/iKnow.3.0/manager/bin/classes/no/intelcom/iknow/events/netty/
-}
-
-function xsdFromXml {
-	trang $1 $2
-}
-
-function vgl { # Start/stop Glassfish app server
-	if [ "$1" = "u" ]; then
-		~/opt/glassfish3/glassfish/bin/asadmin start-domain
-	elif [ "$1" = "d" ]; then
-		~/opt/glassfish3/glassfish/bin/asadmin stop-domain
-	else
-		echo vgl u|d  => u=start, d=stop Glassfish
-	fi
-}
-
-function vls { # Start/stop Lightstreamer server
-	if [ "$1" = "u" ]; then
-		#xterm -e (cd $LIGHTSTREAMER_HOME/bin/unix-like; ./start.sh) &
-		(cd $LIGHTSTREAMER_HOME/bin/unix-like; ./start.sh >/tmp/lightstreamer.log  2>&1 &)
-	elif [ "$1" = "d" ]; then
-		(cd $LIGHTSTREAMER_HOME/bin/unix-like; ./stop.sh)
-	else
-		echo vls u|d  => u=start, d=stop Lightstreamer
-	fi
-}
-
-
-function vlog {  # Less glassfish log
-	 less  ~/opt/glassfish3/glassfish/domains/domain1/logs/server.log
-}
-
-function vdepl {  # Deploy war to glassfish
-	 cp ./target/*.war ~/opt/glassfish3/glassfish/domains/domain1/autodeploy/
-}
-
-function vmk {  # make
-	make $@ 2>&1 | tee /tmp/vmk.log
-}
-
-alias vst=vstart_my_programs
-alias vqlist="$IMQ_HOME/bin/imqcmd list dst -u admin <<<admin"
-alias vfo=gnome-open
-alias vmnu="menu.py &"
-alias vproto="mvn clean install jetty:run"
-alias jack="ack-grep --type=java"
-alias cack="ack-grep --type=cpp"
-alias xack="ack-grep --type=xml"
-alias ack="ack-grep --type=cpp"
-alias vas="apt-cache search"
-
-PS1='\u@\h->\W\$ '

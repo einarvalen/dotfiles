@@ -1,11 +1,21 @@
+set statusline+=%F
+set laststatus=2
+
 set nocompatible              " be iMproved, required
 filetype off                  " required
+
+set path+=**
+set wildmenu
+
+" For indents that consist of 2 space chars but are entered with the tab key
+set tabstop=8 softtabstop=0 expandtab shiftwidth=2 smarttab
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
 
 " Track the engine.
 Plugin 'SirVer/ultisnips'
@@ -22,10 +32,8 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
 
 
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-
 Plugin 'idanarye/vim-dutyl'
+let g:dutyl_stdImportPaths=['/usr/include/dmd']
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -99,9 +107,15 @@ set nobackup
 set nowb
 set noswapfile
 
-" 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
+" 1 tab == 2 spaces
+set shiftwidth=2
+set tabstop=2
+set paste
+
+" use tabs when switching buffers
+set switchbuf=usetab,newtab
+nnoremap <F8> :sbnext<CR>
+nnoremap <S-F8> :sbprevious<CR>
  
 " Delete trailing white space on save, useful for Python and CoffeeScript ;)
 func! DeleteTrailingWS()
@@ -121,6 +135,8 @@ map <leader>sn ]s
 map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
+
+map ; :
 
 " => Helper functions
 function! CmdLine(str)
@@ -173,10 +189,21 @@ function! <SID>BufcloseCloseIt()
 
    if bufnr("%") == l:currentBufNum
      new
-   endif
+"    endif
 
    if buflisted(l:currentBufNum)
      execute("bdelete! ".l:currentBufNum)
    endif
 endfunction
        
+nmap <silent> <A-Up> :wincmd k<CR>
+nmap <silent> <A-Down> :wincmd j<CR>
+nmap <silent> <A-Left> :wincmd h<CR>
+nmap <silent> <A-Right> :wincmd l<CR>
+nmap <silent> <leader>tn :tabn<cr>
+nmap <silent> <leader>tp :tabp<cr>
+
+" DUDCDstartServer
+" DUDCDstropServer
+" DUDCDrestartServer
+" DUDCDclearCache
