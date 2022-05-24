@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =7
+let g:netrw_dirhist_7='/home/einar/Dropbox/notes'
+let g:netrw_dirhist_6='/home/einar/dev/dnb/map-applications/ba00600-mx/config/dev'
+let g:netrw_dirhist_5='/home/einar/dev/dnb/map-applications/ba00600-mx/config'
+let g:netrw_dirhist_4='/home/einar/dev/dnb/map-applications/ba00600-mx'
+let g:netrw_dirhist_3='/home/einar/dev/dnb/map-applications/ba00600-mx/apps'
+let g:netrw_dirhist_2='/home/einar/dev/dnb/map-applications/ba00600-mx/apps/file-transfer'
+let g:netrw_dirhist_1='/home/einar/dev/dnb/map-applications/ba00600-mx/apps/file-transfer/dev'
+let g:netrw_dirhist_0='/home/einar/Dropbox/einarvalen.com'
+let g:netrw_dirhist_9='/home/einar/Dropbox/einarvalen.com/perhaps-howtos'
+let g:netrw_dirhist_8='/home/einar/Dropbox/einarvalen.com'

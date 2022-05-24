@@ -11,7 +11,7 @@ esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
-HISTCONTROL=ignoreboth
+HISTCONTROL=ignoredups:erasedups
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -116,17 +116,40 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-export http_proxy=http://proxy.vegvesen.no:8080
 export PATH=~/bin:$PATH
 
-alias agrep="ack-grep --ignore-dir=target"
-alias jack="ack-grep --ignore-dir=target --type=java"
-alias xack="ack-grep --ignore-dir=target --type=xml"
-alias cack="ack-grep --ignore-dir=target --type=cpp --type=cc"
-alias sack="ack-grep --ignore-dir=target --type=shell"
-alias dack="ack-grep --ignore-dir=target --type=dlang"
-alias rack="ack-grep --ignore-dir=target --type=ruby"
+alias agrep="ack --ignore-dir=target"
+alias jack="ack --ignore-dir=target --type=java"
+alias xack="ack --ignore-dir=target --type=xml"
+alias cack="ack --ignore-dir=target --type=cpp --type=cc"
+alias sack="ack --ignore-dir=target --type=shell"
+alias dack="ack --ignore-dir=target --type=dlang"
+alias rack="ack --ignore-dir=target --type=ruby"
+alias yack="ack --ignore-dir=target --type=yaml"
 alias vim="vim -p"
+alias ng='/usr/local/bin/ng'
+
+function mdf {
+  tempfile=$(mktemp /tmp/mdf.XXXXXXXX)
+  pandoc $1 > $tempfile
+  firefox $tempfile &
+}
+
+function mdv {
+  pandoc $1 | lynx -stdin
+}
+
+function wiki {
+  lynx duckduckgo.com/html?q="!w $1"
+}
+
+function duck {
+  lynx duckduckgo.com/html?q="$1"
+}
+
+function wh {
+  sshfs einar@10.0.0.41:/media/data /home/einar/wh
+}
 
 function marialog {
 	ssh -q exteva@tomcatlab04 "tail --lines=200 /tmp/maria.log" | less
@@ -137,7 +160,7 @@ function vmakepasswd {
 }
 
 function goodmorning {
-	vim -p ~/Dropbox/timer.txt ~/Dropbox/todo.txt ~/Dropbox/notes.txt ~/Dropbox/einarvalen.com/howto/vim.txt
+	vim -p ~/Dropbox/timer.txt ~/Dropbox/todo.txt ~/Dropbox/notes.txt ~/Dropbox/einarvalen.com/howto/vim.txt ~/.bashrc 
 }
 
 function timer {
@@ -154,38 +177,58 @@ function ubuntu-version {
 
 function vtmux {
     tmux new-session \; \
-        rename-window notes \; \
-        new-window -c ~/git/autopro/lib -n autopro \;  \
-        new-window -c ~/git/svv_tomcat/manifests -n svv_tomcat \; \
-        new-window -c ~/git/svv_httpd/manifests -n svv_httpd \; \
-        new-window -c ~/git/autogen -n autogen \; \
-        new-window -c ~/git/stm -n stm \; \
-        new-window -c ~/git/mariasys/maria -n mariasys \; \
-        new-window -c ~/git/fabel -n fabel\;
-        #new-window -c ~/git/artifactresolver -n artifactresolver\;
-        #new-window -c ~/git/svv_autopro -n svv_autopro \; \
-        #new-window -c ~/git/basestat -n basestat \; \
-        #new-window -c ~/git/svv_mcollective -n mco \; \
+        rename-window home \; \
+				new-window -c ~/tmp -n VMs \; \
+				new-window -c ~/wh/Warehouse/archive -n wh \; \
+				new-window -c ~/dev/rust -n rust \; \
+				new-window -c ~/dev/ -n dev \;
 }
 
-export docwebuser=tdwmariasyssa
-export docwebpw=7siTZIBgj2TGAuwArE4B
+function ip-addresses {
+  ip a | egrep "\b[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}"
+}
+
+function db-tunnel {
+  set -x
+  ssh -L 55000:10.77.30.220:55000 -N -J einarvalen@34.95.253.175 einarvalen@35.247.207.223
+  set +x
+}
+
+function dev-vm {
+  gcloud beta compute ssh --zone "us-east1-b" "mig-as-batch-dev-28wc" --tunnel-through-iap --project "dev-googl-as400-a74a"
+}
+
+function db2-vm {
+  gcloud beta compute ssh --zone "us-east1-b" "db2hadr-1" --tunnel-through-iap --project "dev-googl-as400-a74a"
+}
+
+export SONAR_TOKEN=c28926c0f111f65e8d6f3c1d65ef89661367a82b
+
+function start-sonar {
+  docker run -d --name sonarqube -p 9000:9000 sonarqube
+  echo 'http://localhost:9000/projects'
+  echo 'clean install && mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
+}
 
 #Ranger
 export EDITOR=vim
 export SHELL=bash
 
-export autpro_maria_stm=Rsdhj1vnDRjPTnU5XEeL 
-export autpro_maria_atm=CCjHEkUQAYRVrMZMXNeV 
-export autpro_maria_prod=MNRaBTHnVvfoLvy2WYWS
-export autpro_httpdtest_stm=3Ud4FPQJUkSgFWn6x8JM
-export autpro_httpdtest_atm=PywE6rYVzAjrcPcSaiqd
-export autpro_httpdtest_prod=KBxfSBrgvBi2O89QwQ1S
-export passwd=UgQfDoaHjQM6krxUsRuF # UgQfDoaHjQM6krxUsRuF # yMq3hCJTA9wmL7EbqGUU # 1bCOa0Z19UKn0UeULhbx
-export pwTjeAutopro_Mariasys_stm=UgQfDoaHjQM6krxUsRuF 
-export pwTjeAutopro_Mariasys_atm=yMq3hCJTA9wmL7EbqGUU 
-export pwTjeAutopro_Mariasys_prod=1bCOa0Z19UKn0UeULhbx
-export pwTjeBase_mariasys_01_Autopro=MNRaBTHnVvfoLvy2WYWS # Rsdhj1vnDRjPTnU5XEeL
-export pwTjeBase_mariasys_01_AutoproPROD=AVCKHKnVP8umufsE3jTC
-export pwTjeBase_mariasys_01_AutoproATM=rnE5GwrRYmMwnUSJhmcY
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+export PATH=$PATH:~/.fabric8/bin
+
+source <(kubectl completion bash)
+PS1="\n\[\e[32;1m\](\[\e[37;1m\]\u@\h\[\e[32;1m\])-(\[\e[37;1m\]jobs:\j\[\e[32;1m\])-(\[\e[37;1m\]\w\[\e[32;1m\])\n(\[\[\e[37;1m\]! \!\[\e[32;1m\])-> \[\e[0m\]"
+
+#sshfs einar@10.0.0.41:/media/data /home/einar/wh
+export KUBECONFIG=$HOME/admin.conf
+source <(kubectl completion bash)
+set -o vi
+test -f ~/.git-completion.bash && . $_
+export cornerstone_bytebuddytransform_defaults=language=COBOL,strStorage=ASCII,ptrStorage=BE64,floatStorage=IEEE,zonedStorage=ASCII_SIGN_TRAILING,platform=AS400,endianness=BIG,redefineStrictness=ON_USE_ACTUAL
+
+. "$HOME/.cargo/env"
+compopt -o bashdefault cd

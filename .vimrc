@@ -18,22 +18,26 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 " Track the engine.
-Plugin 'SirVer/ultisnips'
+" Plugin 'SirVer/ultisnips'
 
 " Snippets are separated from the engine. Add this if you want them:
 Plugin 'honza/vim-snippets'
 
+Plugin 'Valloric/YouCompleteMe'
+
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" let g:UltiSnipsExpandTrigger="<c-j>"
+" let g:UltiSnipsJumpForwardTrigger="<c-b>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
 
 " If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
-
+" let g:UltiSnipsEditSplit="vertical"
 
 Plugin 'idanarye/vim-dutyl'
 let g:dutyl_stdImportPaths=['/usr/include/dmd']
+
+Plugin 'leafgarland/typescript-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -49,7 +53,7 @@ filetype plugin indent on    " required
 "
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
-set number
+set number relativenumber
 " Sets how many lines of history VIM has to remember
 set history=700
 
@@ -110,7 +114,6 @@ set noswapfile
 " 1 tab == 2 spaces
 set shiftwidth=2
 set tabstop=2
-set paste
 
 " use tabs when switching buffers
 set switchbuf=usetab,newtab
@@ -202,8 +205,14 @@ nmap <silent> <A-Left> :wincmd h<CR>
 nmap <silent> <A-Right> :wincmd l<CR>
 nmap <silent> <leader>tn :tabn<cr>
 nmap <silent> <leader>tp :tabp<cr>
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
 
 " DUDCDstartServer
 " DUDCDstropServer
 " DUDCDrestartServer
-" DUDCDclearCache
+"t DUDCDclearCache
+
+set paste
+set statusline+=\ col:\%c
+set vb
